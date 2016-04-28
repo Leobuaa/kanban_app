@@ -1,49 +1,29 @@
+import AltContainer from 'alt-container';
 import React from 'react';
-import uuid from 'uuid';
 import Notes from './Notes.jsx';
+import NoteActions from '../actions/NoteActions';
+import NoteStore from '../stores/NoteStore';
 
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            notes: [
-                {
-                    id: uuid.v4(),
-                    task: 'Learn Webpack'
-                },
-                {
-                    id: uuid.v4(),
-                    task: 'Learn React'
-                },
-                {
-                    id: uuid.v4(),
-                    task: 'Do laundry'
-                }
-            ]
-        };
-    }
-
     render() {
-        const notes = this.state.notes;
 
         return (
             <div>
                 <button className="add-note" onClick={this.addNote}>+</button>
-                <Notes notes={notes}
-                       onEdit={this.editNote}
-                       onDelete={this.deleteNote}/>
+                <AltContainer
+                    stores={[NoteStore]}
+                    inject={{
+            notes: () => NoteStore.getState().notes
+          }}
+                >
+                    <Notes onEdit={this.editNote} onDelete={this.deleteNote} />
+                </AltContainer>
             </div>
         );
     }
 
     addNote = () => {
-        this.setState({
-           notes: this.state.notes.concat([{
-                id: uuid.v4(),
-                task: 'New Task'
-           }])
-        });
+        NoteActions.create({task: 'New task'});
     };
 
     editNote = (id, task) => {
@@ -51,22 +31,13 @@ export default class App extends React.Component {
             return;
         }
 
-        const notes = this.state.notes.map(note => {
-            if (note.id == id && task) {
-                note.task = task;
-            }
-            return note;
-        });
-
-        this.setState({notes});
+        NoteActions.update({id, task});
     };
 
     deleteNote = (id, e) => {
         e.stopPropagation();
 
-        this.setState({
-            notes: this.state.notes.filter(note => note.id !== id)
-        });
+        NoteActions.delete(id);
     }
 }
 
