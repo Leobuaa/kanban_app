@@ -17,6 +17,8 @@ class NoteStore {
 
         note.id = uuid.v4();
 
+        note.editing = true;
+
         this.setState({
             notes: notes.concat(note)
         });
