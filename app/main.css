@@ -49,9 +49,9 @@ body {
     visibility: hidden;
 }
 
-.note .delete-note span {
+.note .delete-note span , .note .delete span{
     position: absolute;
-    margin: -0.7em 0 0 -0.28em;
+    margin: -0.7em 0 0 -0.25em;
 }
 
 .note:hover .delete-note, .note:hover .delete {
